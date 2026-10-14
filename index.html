@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Shopping Cart</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; color: #333; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .product-list, .cart-list { list-style: none; padding: 0; }
+        .product-item, .cart-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        button { background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .remove-btn { background: #dc3545; }
+        .remove-btn:hover { background: #bd2130; }
+        .cart-summary { margin-top: 20px; font-weight: bold; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛍️ Store Products</h2>
+    <ul class="product-list" id="product-list">
+        <!-- Products populated via JavaScript -->
+    </ul>
+
+    <h2>🛒 Shopping Cart</h2>
+    <ul class="cart-list" id="cart-list">
+        <p>Your cart is empty.</p>
+    </ul>
+
+    <div class="cart-summary">
+        Total: $<span id="cart-total">0.00</span>
+    </div>
+</div>
+
+<script>
+    // Array of available store products
+    const products = [
+        { id: 1, name: "Wireless Headphones", price: 59.99 },
+        { id: 2, name: "Smart Watch", price: 129.99 },
+        { id: 3, name: "Running Shoes", price: 89.99 }
+    ];
+
+    // Array representing the user's shopping cart
+    let cart = [];
+
+    // Render products on the page
+    function renderProducts() {
+        const productListEl = document.getElementById("product-list");
+        productListEl.innerHTML = "";
+        
+        products.forEach(product => {
+            productListEl.innerHTML += `
+                <li class="product-item">
+                    <span>${product.name} - $${product.price.toFixed(2)}</span>
+                    <button onclick="addToCart(${product.id})">Add to Cart</button>
+                </li>
+            `;
+        });
+    }
+
+    // Add an item to the cart array
+    function addToCart(productId) {
+        const productToAdd = products.find(p => p.id === productId);
+        cart.push(productToAdd);
+        renderCart();
+    }
+
+    // Remove an item from the cart array by index
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        renderCart();
+    }
+
+    // Render cart items and compute the total price using array iteration
+    function renderCart() {
+        const cartListEl = document.getElementById("cart-list");
+        const cartTotalEl = document.getElementById("cart-total");
+        
+        if (cart.length === 0) {
+            cartListEl.innerHTML = "<p>Your cart is empty.</p>";
+            cartTotalEl.innerText = "0.00";
+            return;
+        }
+
+        cartListEl.innerHTML = "";
+        let total = 0;
+
+        cart.forEach((item, index) => {
+            total += item.price;
+            cartListEl.innerHTML += `
+                <li class="cart-item">
+                    <span>${item.name} - $${item.price.toFixed(2)}</span>
+                    <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+                </li>
+            `;
+        });
+
+        cartTotalEl.innerText = total.toFixed(2);
+    }
+
+    // Initial load
+    renderProducts();
+</script>
+
+</body>
+</html>
